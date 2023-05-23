@@ -20,7 +20,21 @@ class Questionnaire
     #[ORM\ManyToOne(targetEntity: Matiere::class, inversedBy: 'questionnaires')]
     private ?Matiere $matiere = null;
 
-    // ... Reste de votre code ...
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getTitre(): ?string
+    {
+        return $this->titre;
+    }
+
+    public function setTitre(?string $titre): self
+    {
+        $this->titre = $titre;
+        return $this;
+    }
 
     public function getMatiere(): ?Matiere
     {
