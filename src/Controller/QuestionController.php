@@ -2,13 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Reponse;
 use App\Entity\Question;
 use App\Form\QuestionType;
 use App\Repository\QuestionRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/question')]
 class QuestionController extends AbstractController
@@ -25,16 +26,23 @@ class QuestionController extends AbstractController
     public function new(Request $request, QuestionRepository $questionRepository): Response
     {
         $question = new Question();
+        $reponse1 = new Reponse();
+        $reponse2 = new Reponse();
+        $question->addReponse($reponse1);
+        $question->addReponse($reponse2);
         $form = $this->createForm(QuestionType::class, $question);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($question->getReponses() as $reponse) {
+                $reponse->setQuestion($question);
+            }
             $questionRepository->save($question, true);
 
             return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('question/new.html.twig', [
+        return $this->render('question/new.html.twig', [
             'question' => $question,
             'form' => $form,
         ]);
@@ -55,12 +63,15 @@ class QuestionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($question->getReponses() as $reponse) {
+                $reponse->setQuestion($question);
+            }
             $questionRepository->save($question, true);
 
             return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('question/edit.html.twig', [
+        return $this->render('question/edit.html.twig', [
             'question' => $question,
             'form' => $form,
         ]);
@@ -69,7 +80,7 @@ class QuestionController extends AbstractController
     #[Route('/{id}', name: 'app_question_delete', methods: ['POST'])]
     public function delete(Request $request, Question $question, QuestionRepository $questionRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$question->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $question->getId(), $request->request->get('_token'))) {
             $questionRepository->remove($question, true);
         }
 

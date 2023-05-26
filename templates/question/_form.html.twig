@@ -1,7 +1,30 @@
+
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ form_widget(form.libelle) }}
+    <ul id="reponses-container" data-prototype="{{ form_row(form.reponses.vars.prototype)|e('html_attr') }}">
+    {% for reponse in form.reponses %}
+        <li>{{ form_row(reponse) }}</li>
+    {% endfor %}
+    </ul>
+    <button type="button" id="add-answer">Ajouter une réponse</button>
     <div class="d-flex justify-content-between">
         <button class="btn btn-primary">{{ button_label|default('Valider') }}</button>
         <a href="{{ path('app_question_index') }}" class="btn btn-primary">Retour à la liste</a>
     </div>
 {{ form_end(form) }}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const listContainer = document.querySelector('#reponses-container');
+        const addAnswerButton = document.querySelector('#add-answer');
+        
+        addAnswerButton.addEventListener('click', function() {
+            const newListItem = document.createElement('li');
+            const newItemTemplate = listContainer.dataset.prototype;
+            const index = listContainer.children.length;
+            
+            newListItem.innerHTML = newItemTemplate.replace(/__name__/g, index);
+            listContainer.appendChild(newListItem);
+        });
+    });
+</script>
