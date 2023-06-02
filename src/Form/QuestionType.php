@@ -18,12 +18,13 @@ class QuestionType extends AbstractType
         $builder
             ->add('libelle', TextType::class, ['label' => 'Libellé de la question'])
             ->add('reponses', CollectionType::class, [
-                'entry_type' => ReponseType::class,
+                'entry_type'    => ReponseType::class,
                 'entry_options' => ['label' => false],
-                'allow_add' => true,
-                // 'allow_delete' => true,
+                'allow_add'     => true,
+                'by_reference'  => false,
             ])
-            // ->add('image', FileType::class, ['label' => 'Image', 'required' => false])
+
+            // ->add('image', FileType::class, ['label' => 'Image', 'required'=>false])
         ;
     }
 

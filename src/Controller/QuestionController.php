@@ -26,17 +26,15 @@ class QuestionController extends AbstractController
     public function new(Request $request, QuestionRepository $questionRepository): Response
     {
         $question = new Question();
-        $reponse1 = new Reponse();
-        $reponse2 = new Reponse();
-        $question->addReponse($reponse1);
-        $question->addReponse($reponse2);
+        // $reponse1= new Reponse();
+        // $reponse2= new Reponse();
+        // $question->addReponse($reponse1);
+        // $question->addReponse($reponse2);
+
         $form = $this->createForm(QuestionType::class, $question);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            foreach ($question->getReponses() as $reponse) {
-                $reponse->setQuestion($question);
-            }
             $questionRepository->save($question, true);
 
             return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
@@ -44,7 +42,7 @@ class QuestionController extends AbstractController
 
         return $this->render('question/new.html.twig', [
             'question' => $question,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -63,14 +61,11 @@ class QuestionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            foreach ($question->getReponses() as $reponse) {
-                $reponse->setQuestion($question);
-            }
             $questionRepository->save($question, true);
 
             return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
         }
-
+        // remplacer renderForm déprécié par render
         return $this->render('question/edit.html.twig', [
             'question' => $question,
             'form' => $form,

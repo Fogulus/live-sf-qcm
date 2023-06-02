@@ -17,7 +17,8 @@ class ReponseType extends AbstractType
                 'libelle',
                 TextType::class,
                 [
-                    'label' => 'Votre réponse'
+                    'label' => 'Réponse'
+                    // 'label' => false
                 ],
             );
     }
